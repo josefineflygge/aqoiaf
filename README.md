@@ -6,6 +6,7 @@ The vision of this project is to create a web app where users can get insight in
  
 #### If time allows
 - A quiz game + user scores
+- Some type of forum for discussion
 - Additional searchable information
 
 ### Technological specification
