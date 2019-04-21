@@ -15,9 +15,9 @@ The vision of this project is to create a web app where users can get insight in
 - React + Redux
 
 #### Server-side:
-- Node.js + Express.js for communication with client
-- MongoDB for storing content
-- Firebase for authentication / user data
+- Node.js + Express.js
+- SQLite DB for storing content
+- Firebase for authentication/user data
 
 #### Deployment platform:
 - Heroku 
