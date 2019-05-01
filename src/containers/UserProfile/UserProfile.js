@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 
 import PostsList from '../../components/SavedPostsList/SavedPostsList';
 import { connect } from 'react-redux';
+import styles from './UserProfile.module.css'
 
 class UserProfile extends Component {
 
@@ -11,7 +12,7 @@ class UserProfile extends Component {
 
     return(
       <div>
-        <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+        <div className={styles.Container}>
           <PostsList posts={this.props.savedPosts}/>
         </div>
       </div>

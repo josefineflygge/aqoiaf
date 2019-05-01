@@ -3,12 +3,13 @@ import React from 'react';
 
 import { Card } from 'semantic-ui-react';
 import CharacterPost from '../../components/Post/CharacterPost/CharacterPost';
+import styles from './SavedPostsList.module.css';
 
 const savedPostsList = (props) => {
 
     return (
     
-        <div style={{ width: '50%'}}>
+        <div className={styles.ListContainer}>
             <Card.Group doubling centered itemsPerRow={3}>
 
             {props.posts && props.posts.map(post =>{

@@ -1,0 +1,11 @@
+
+.HomeContainer{
+    display:flex;
+    flex-direction: column;
+    align-items:center;
+}
+
+.TitleContainer{
+    width: 25em;
+    padding-bottom: 2em;
+}

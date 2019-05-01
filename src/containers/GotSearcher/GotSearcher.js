@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 
 import { Button, Select, Input } from 'semantic-ui-react';
+import styles from './GotSearcher.module.css';
 
 
 class GotSearcher extends Component {
@@ -16,7 +17,7 @@ class GotSearcher extends Component {
 
         return (
 
-            <div style={{width: '22em'}}>
+            <div className={styles.SearchContainer}>
                 <Input size='mini' fluid type='text' placeholder='Select a category and search...' action>
                     <input />
                     <Select compact options={searchCategoryOptions} defaultValue='characters' />
