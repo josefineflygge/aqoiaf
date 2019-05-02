@@ -1,4 +1,60 @@
 
-.SearchContainer {
-    width: 22em;
-}
+  .container {
+    position: relative;
+  }
+  
+  .input {
+    width: 30em;
+    height: 3em;
+    padding: 5px 10px;
+    font-size: 17px;
+    background-color: #fff;
+    border: 2px solid #fff;
+    border-radius: 4px;
+    color: #555;
+  }
+
+  
+  .inputFocused {
+    outline: none;
+  }
+  
+  .inputOpen {
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+  
+  .suggestionsContainer {
+    display: none;
+  }
+  
+  .suggestionsContainerOpen {
+    display: block;
+    position: absolute;
+    top: 51px;
+    text-align: left;
+    width: 30em;
+    background-color: #fff;
+    color: #000;
+    font-weight: 300;
+    font-size: 17px;
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+    z-index: 2;
+  }
+  
+  .suggestionsList {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+  }
+  
+  .suggestion {
+    cursor: pointer;
+    padding: 10px 20px;
+  }
+  
+  .suggestionHighlighted {
+    background-color: #ccc; /* #859ab2; */
+  }
+  
