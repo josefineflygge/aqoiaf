@@ -7,7 +7,8 @@ import Home from './components/Home/Home';
 import CharacterPostDetail from './components/Post/CharacterPost/CharacterPostDetail/CharacterPostDetail';
 import SignIn from './containers/Auth/SignIn/SignIn';
 import SignUp from './containers/Auth/SignUp/SignUp';
- 
+import BattlePostDetail from './components/Post/BattlePost/BattlePostDetail/BattlePostDetail';
+import HousePostDetail from './components/Post/HousePost/HousePostDetail/HousePostDetail';
 
 class App extends Component {
   render() {
@@ -21,6 +22,8 @@ class App extends Component {
               <Route path="/character/:id" component={CharacterPostDetail} />
               <Route path="/signin" component={SignIn} />
               <Route path="/signup" component={SignUp} />
+              <Route path="/house/:id" component={HousePostDetail} />
+              <Route path="/battle/:id" component={BattlePostDetail} />
             </Switch>
           </Layout>
         </header>

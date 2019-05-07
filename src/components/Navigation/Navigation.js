@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Menu, Segment } from 'semantic-ui-react';
+import { Menu } from 'semantic-ui-react';
 import SignedInLinks from './SignedInLinks';
 import styles from './Navigation.module.css';
 //import SignedOutLinks from './SignedOutLinks';

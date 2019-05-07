@@ -1,0 +1,9 @@
+
+
+.NavItem a {
+    color: #ccc;
+}
+
+.NavItem a:active {
+    color: #000;
+}

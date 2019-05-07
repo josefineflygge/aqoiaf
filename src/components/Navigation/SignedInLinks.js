@@ -6,7 +6,7 @@ import Aux from '../../hoc/Auxillary';
 const signedInLinks = () => {
     return (
         <Aux>
-            <Menu.Item>
+            <Menu.Item >
                 <NavLink to="/" exact > {/* activeClassName={classes.active} */}
                 <Icon size='big' name='home' />
                 </NavLink>

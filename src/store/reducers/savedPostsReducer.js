@@ -1,19 +1,25 @@
 
  const initState = {
  
-     posts: [
-        {id: '1', title: 'Dany', house: 'Tagaryen'},
-        {id: '2', title: 'Arya', house: 'Stark'},
-        {id: '3', title: 'Tyrion', house: 'Lannister'}
-    ]
+     posts: []
 
 }
 
 const savedPostsReducer = (state = initState, action) => {
 
+    switch(action.type){
+
+        case("SET_SAVED"):
+            console.log("Setting saved posts for id: ", action.userID)
+            return {
+                posts: action.savedData
+            };
+
+        default:
+            return state;
 
 
-    return state;
+    }
 
 }
 

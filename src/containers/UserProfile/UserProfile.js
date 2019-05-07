@@ -2,13 +2,23 @@ import React, { Component } from 'react';
 
 import PostsList from '../../components/SavedPostsList/SavedPostsList';
 import { connect } from 'react-redux';
-import styles from './UserProfile.module.css'
+import styles from './UserProfile.module.css';
+import { setSavedPosts } from '../../store/actions/savedPostsActions';
 
 class UserProfile extends Component {
 
-  render(){
+  state = {
+    userID: "testuser" //dummy
+  }
 
-    console.log(this.props.savedPosts);
+  componentDidMount(){
+
+    //fetch saved posts from database and sets it in reducer
+    this.props.setSavedPosts(this.state.userID);
+
+  }
+
+  render(){
 
     return(
       <div>
@@ -32,5 +42,13 @@ const mapStateToProps = (state) => {
 
 }
 
+const mapDispatchToProps = (dispatch) => {
 
-export default connect(mapStateToProps)(UserProfile); //connect returns a hoc to take in the userProfile
+  return {
+    setSavedPosts: (userID) => dispatch(setSavedPosts(userID))
+  }
+
+}
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(UserProfile); //connect returns a hoc to take in the userProfile

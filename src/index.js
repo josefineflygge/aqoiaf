@@ -4,12 +4,16 @@ import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 
-import { createStore } from 'redux';
+import { createStore, applyMiddleware } from 'redux';
 import { Provider } from 'react-redux'; //binds redux with the react app
 import { BrowserRouter } from 'react-router-dom';
 import rootReducer from './store/reducers/rootReducer';
+import thunk from 'redux-thunk';
+//import axios from 'axios';
 
-const store = createStore(rootReducer);
+//axios.defaults.baseURL("http://192.168.10.212:8000");
+
+const store = createStore(rootReducer, applyMiddleware(thunk));
 
 const app = (
     <Provider store={store}>

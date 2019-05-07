@@ -11,8 +11,8 @@ const CharacterPost = (props) => {
         <Card>
             <Image src={danyImg} />
             <Card.Content>
-            <Card.Header>{props.post.title}</Card.Header>
-            <Card.Meta>of House {props.post.house}</Card.Meta>
+            <Card.Header>{props.post.name}</Card.Header>
+            <Card.Meta>{props.post.type}</Card.Meta>
             </Card.Content>
         </Card>
 
