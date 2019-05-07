@@ -45,7 +45,7 @@ const savedPostsList = (props) => {
                 
                 return(    
                     <div key={post.id} className={styles.cardContainer}>
-                        <Link to={'/' + post.type + '/' + post.id}>{postComp}</Link>
+                        <Link to={'/' + post.type + '/' + post.name}>{postComp}</Link>
                     </div>
                 );
               

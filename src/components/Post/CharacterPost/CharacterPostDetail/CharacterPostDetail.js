@@ -2,11 +2,11 @@ import React from 'react'
 
 const CharacterPostDetail = (props) => {
 
-    const id = props.match.params.id;
+    const name = props.match.params.name;
 
   return (
     <div>
-        <p>Title - {id}</p>
+        <p>Title - {name}</p>
         <p>Content</p>
     </div>
   )

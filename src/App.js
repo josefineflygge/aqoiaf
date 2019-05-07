@@ -19,11 +19,11 @@ class App extends Component {
             <Switch>
               <Route path="/profile" component={UserProfile} />
               <Route path="/" exact component={Home} />
-              <Route path="/character/:id" component={CharacterPostDetail} />
+              <Route path="/character/:name" component={CharacterPostDetail} />
               <Route path="/signin" component={SignIn} />
               <Route path="/signup" component={SignUp} />
-              <Route path="/house/:id" component={HousePostDetail} />
-              <Route path="/battle/:id" component={BattlePostDetail} />
+              <Route path="/house/:name" component={HousePostDetail} />
+              <Route path="/battle/:name" component={BattlePostDetail} />
             </Switch>
           </Layout>
         </header>

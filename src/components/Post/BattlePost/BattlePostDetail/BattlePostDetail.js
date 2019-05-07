@@ -2,15 +2,12 @@ import React from 'react'
 
 const BattlePostDetail = (props) => {
 
-    const id = props.id;
+    const name = props.match.params.name;
 
   return (
     <div>
-        <p>Title - {id}</p>
-      <p>About Battle</p>
-      <p>Image</p>
-      <p>People in battle</p>
-      <p>etc</p>
+        <p>Title - {name}</p>
+        <p>Content</p>
     </div>
   )
 }
