@@ -1,5 +1,8 @@
 import React, { Component } from 'react'
 import {Button, Input, Icon, Form} from 'semantic-ui-react';
+import {connect} from 'react-redux';
+import { signIn } from '../../../store/actions/authActions';
+import {Redirect} from 'react-router-dom';
 
 class SignIn extends Component {
 
@@ -19,11 +22,19 @@ class SignIn extends Component {
     handleSubmit = (e) => {
 
         e.preventDefault(); //don't refresh on submit
-        console.log(this.state.email, this.state.password)
+        this.props.signIn(this.state);
 
     }
 
   render() {
+
+    const { authError } = this.props;
+
+    const {auth} = this.props;
+    if(auth.uid) {
+      return <Redirect to="/"></Redirect>
+    } 
+
     return (
       <div>
           <h2>Sign in</h2>
@@ -42,6 +53,9 @@ class SignIn extends Component {
             </Form.Field>
 
             <Button type='submit' content='Login' icon='right arrow' labelPosition='right' />
+            <div style={{marginTop: '20px'}}>
+              { authError ? (<p>{authError}</p>) : null}
+            </div>
         </Form>
 
 
@@ -50,4 +64,20 @@ class SignIn extends Component {
   }
 }
 
-export default SignIn;
+const mapStateToprops = (state) => {
+  console.log("Firebase :", state.firebase);
+  return{
+    authError: state.auth.authError,
+    auth: state.firebase.auth
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+
+  return {
+    signIn: (creds) => dispatch(signIn(creds))
+  }
+
+}
+
+export default connect(mapStateToprops, mapDispatchToProps)(SignIn);

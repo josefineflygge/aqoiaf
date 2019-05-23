@@ -1,9 +1,13 @@
 import React, { Component } from 'react'
 import {Button, Icon, Input, Form} from 'semantic-ui-react';
+import {signUp} from '../../../store/actions/authActions';
+import {connect} from 'react-redux';
+import {Redirect} from 'react-router-dom';
 
 class SignUp extends Component {
 
     state = {
+        
         firstName: "",
         lastName: "",
         email: "",
@@ -21,13 +25,22 @@ class SignUp extends Component {
     handleSubmit = (e) => {
 
         e.preventDefault(); //don't refresh on submit
-        console.log(this.state.firstName, this.state.lastName, 
-            this.state.email, this.state.password)
+        console.log("State: ", this.state)
+        this.props.signUp(this.state)
 
     }
 
 
   render() {
+
+    const { authError } = this.props;
+
+    const {auth} = this.props;
+    if(auth.uid) {
+      return <Redirect to="/"></Redirect>
+    } 
+
+
     return (
       <div>
           
@@ -49,7 +62,7 @@ class SignUp extends Component {
 
             <Form.Field>
                 <label >E-mail</label>
-                <Input type="password" id="email" iconPosition='left' placeholder='E-mail' onChange={this.handleChange}>
+                <Input type="text" id="email" iconPosition='left' placeholder='E-mail' onChange={this.handleChange}>
                     <Icon name='at' />
                     <input />
                 </Input>
@@ -62,6 +75,9 @@ class SignUp extends Component {
             </Form.Field>
           
             <Button type='submit' content='Register' icon='right arrow' labelPosition='right' />
+            <div style={{marginTop: '20px'}}>
+              { authError ? (<p>{authError}</p>) : null}
+            </div>
         </Form>
 
 
@@ -70,4 +86,23 @@ class SignUp extends Component {
   }
 }
 
-export default SignUp;
+const mapStateToprops = (state) => {
+    console.log("Firebase :", state.firebase);
+    return{
+      authError: state.auth.authError,
+      auth: state.firebase.auth
+    }
+  }
+
+
+const mapDispatchToProps = (dispatch) => {
+
+    return{
+        signUp: (newUser) => dispatch(signUp(newUser))
+    }
+}
+
+
+
+
+export default connect(mapStateToprops, mapDispatchToProps)(SignUp);

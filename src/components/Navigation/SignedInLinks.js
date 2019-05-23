@@ -3,7 +3,10 @@ import {NavLink} from 'react-router-dom';
 import { Button, Menu, Icon } from 'semantic-ui-react';
 import Aux from '../../hoc/Auxillary';
 
-const signedInLinks = () => {
+import {connect} from 'react-redux';
+import {signOut} from '../../store/actions/authActions';
+
+const signedInLinks = (props) => {
     return (
         <Aux>
             <Menu.Item >
@@ -19,13 +22,17 @@ const signedInLinks = () => {
 
             <Menu.Menu position='right'>
                 <Menu.Item>
-                    <NavLink to="/">
-                        <Button inverted>Log Out</Button>
-                    </NavLink>
+                        <Button onClick={props.signOut} inverted>Log Out</Button>
                 </Menu.Item>
             </Menu.Menu>
         </Aux>
     )
 }
 
-export default signedInLinks;
+const mapDispatchToProps = (dispatch) => {
+    return{
+        signOut: () => dispatch(signOut())
+    }
+}
+
+export default connect(null, mapDispatchToProps)(signedInLinks);

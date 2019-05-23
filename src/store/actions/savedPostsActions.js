@@ -4,7 +4,8 @@ export const setSavedPosts = (userID) => {
 
     return (dispatch, getState) => {
 
-    axios.get("http://192.168.10.212:8000/getposts/" + userID)
+    //external ip adress
+    axios.get("http://83.227.100.168:42132/getposts/" + userID)
       .then(res => {
 
           let posts = res.data;
