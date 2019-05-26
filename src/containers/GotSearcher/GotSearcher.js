@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 
 import styles from './GotSearcher.module.css';
 import {Input} from 'semantic-ui-react';
+import {Redirect} from 'react-router-dom';
 
 import Autosuggest from 'react-autosuggest';
 
@@ -14,7 +15,8 @@ class GotSearcher extends Component {
         value: '',
         suggestions: [],
         optionList: [],
-        focusedOption: ''
+        focusedOption: '',
+        redirect: null,
     }
 
 
@@ -157,6 +159,8 @@ class GotSearcher extends Component {
 
         console.log("[handleSearch] : ", this.state.focusedOption);
 
+        this.setState({redirect: this.state.focusedOption});
+
       }
 
     render () {
@@ -168,6 +172,33 @@ class GotSearcher extends Component {
             value,
             onChange: this.onChange
           };
+
+         let redirectLink = null;
+         
+         if(this.state.redirect){
+
+          switch(this.state.redirect.type){
+
+            case 'character':
+              redirectLink = <Redirect to={"/character/" + this.state.redirect.name}></Redirect>
+              break;
+
+            case 'house':
+              redirectLink = <Redirect to={"/house/" + this.state.redirect.name}></Redirect>
+              break;
+
+            case 'battle':
+              redirectLink = <Redirect to={"/battle/" + this.state.redirect.name}></Redirect>
+              break;
+            
+            default:
+              redirectLink = null;
+              break;
+
+          }
+
+          return redirectLink;
+         }
 
           
         return (

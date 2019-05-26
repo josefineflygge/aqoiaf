@@ -9,8 +9,8 @@ const savedPostsReducer = (state = initState, action) => {
 
     switch(action.type){
 
-        case("SET_SAVED"):
-            console.log("Setting saved posts for id: ", action.userID)
+        case("GET_SAVED"):
+            console.log("Getting saved posts for id: ", action.userID)
             return {
                 posts: action.savedData
             };

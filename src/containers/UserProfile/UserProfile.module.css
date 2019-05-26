@@ -1,6 +1,20 @@
 
 .Container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+
+ display:flex;
+ flex-direction: column;
+ align-items: left;
+ justify-content: center;
+ text-align: left;
+}
+
+
+.BigContainer {
+margin-top: 5em;
+margin-bottom: 4em;
+width: 90%;
+ display:flex;
+ flex-direction: column;
+ align-items: center;
+ justify-content: center;
 }

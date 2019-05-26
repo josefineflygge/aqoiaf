@@ -1,28 +1,38 @@
 
 import React from 'react';
 import {Link} from 'react-router-dom';
-
-import { Card } from 'semantic-ui-react';
 import styles from './SavedPostsList.module.css';
 
 import CharacterPost from '../../components/Post/CharacterPost/CharacterPost';
 import HousePost from '../../components/Post/HousePost/HousePost';
 import BattlePost from '../../components/Post/BattlePost/BattlePost';
+import {Grid, Divider} from '@material-ui/core/';
+
+import Aux from '../../hoc/Auxillary';
 
 
 
 const savedPostsList = (props) => {
 
-
+   
     return (
-    
+
+        <Aux>
+        <h4>Characters</h4>
+        <Divider  style={{backgroundColor: 'white'}} />
         <div className={styles.ListContainer}>
-            <Card.Group doubling centered itemsPerRow={3}>
+        <Grid
+            container
+            direction="row"
+            justify="flex-start"
+            alignItems="center"
+        >
+     
+    
+      
 
             {props.posts && props.posts.map(post =>{
 
-
-                //let linkUrl = "/${post.type}/${post.id}";
                 let postComp;
 
                 switch(post.type){
@@ -48,11 +58,16 @@ const savedPostsList = (props) => {
                         <Link to={'/' + post.type + '/' + post.name}>{postComp}</Link>
                     </div>
                 );
-              
 
-            })}           
-            </Card.Group>
+            })}  
+
+            </Grid>       
         </div>
+        <h4>Houses</h4>
+        <Divider  style={{backgroundColor: 'white'}} />
+        <h4>Battles</h4> 
+        <Divider  style={{backgroundColor: 'white'}} />
+        </Aux>
 
     )
 

@@ -1,0 +1,11 @@
+.Container {
+    display: flex;
+    flex-direction:column;
+    align-items: center;
+    width: 20em;
+    margin: auto auto;
+}
+
+.Container p {
+    color: salmon;
+}

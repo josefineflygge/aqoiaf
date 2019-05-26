@@ -1,3 +1,4 @@
+import axios from 'axios';
 
 export const signIn = (credentials) => {
 
@@ -30,6 +31,8 @@ export const signOut = () => {
            dispatch({type: 'SIGNOUT_ERROR', err});
        })
 
+       firebase.logout();
+
     }
 
       
@@ -48,6 +51,13 @@ export const signUp = (newUser) => {
 
                 console.log("resp uid", resp.user.uid)
 
+                //Add user table to content DB, table name has to start with letter
+                axios.get("http://83.227.100.168:42132/adduser/U_" + resp.user.uid)
+                .then(res => {
+                    console.log("Added user message:", res)
+                    }
+                )
+
                 //resp.user
                 return firestore.collection('users').doc(resp.user.uid).set({
                     firstName: newUser.firstName,
@@ -59,8 +69,10 @@ export const signUp = (newUser) => {
             }).catch((err) =>{
                 dispatch({type: 'SIGNUP_ERROR', err})
             })
+            
 
     }
+
 
 
 } 

@@ -12,8 +12,10 @@ const DB_PATH = 'got_db';
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  res.header("Content-Type", "application/json; charset=utf-8");
   next();
 });
+
 
 const db = new sqlite3.Database(DB_PATH, sqlite3.OPEN_READWRITE, function(err){
   if (err) {
@@ -40,11 +42,11 @@ app.get('/', function (req, res){
 // create a new user table by userid from firebase
 app.get('/adduser/:id', (req, res) => {
 
-  console.log("req: ", req);
-
   var userID = req.params.id;
+  console.log("userID: ", userID);
 
-  let query = `CREATE TABLE ${userID} (id TEXT, type TEXT, name TEXT)`;
+
+  let query = `CREATE TABLE ${userID} (id TEXT, type TEXT, name TEXT, image VARCHAR(255))`;
 
 
     db.all(query, (err, rows) => {
@@ -53,22 +55,26 @@ app.get('/adduser/:id', (req, res) => {
             res.send("Error occurred when adding user");//throw err;
         }
         else{
-          res.send("Added user"+userID);
+          res.send("Added user: "+userID);
         }
 
   });
 });
 
 
+
 // Add saved post to user
-app.get('/addpost/:userid/:postid/:type/:name', (req, res) => {
+app.get('/addpost/:userid/:postid/:type/:name/:img', (req, res) => {
 
   var userID = req.params.userid;
   var postID = req.params.postid;
   var type = req.params.type;
   var name = req.params.name;
+  var image = decodeURIComponent(req.params.img);
 
-    var query = `INSERT INTO ${userID} (id, type, name) VALUES ( "${postID}", "${type}", "${name}" )`;
+  console.log("image", image);
+
+    var query = `INSERT INTO ${userID} (id, type, name, image) VALUES ( "${postID}", "${type}", "${name}", "${image}")`;
     
     db.all(query, (err, rows) => {
 
@@ -116,14 +122,13 @@ app.get('/deletepost/:userid/:postid', (req, res) => {
 
   var userID = req.params.userid;
   var postID = req.params.postid;
+ 
+  let query = `DELETE FROM ${userID} WHERE id= '${postID}'`;
 
-  let query = `DELETE FROM ${userID} WHERE id = ${postID}`;
-
-  // db.all() fetches all results from an SQL query into the 'rows' variable:
   db.all(query, (err, rows) => {
 
         if (err) {
-            res.send("Error: Can't delete post from user"+userID+"!");//throw err;
+            res.send("Error: Can't delete post:" + postID + " from user: "+ userID +"!");//throw err;
         }
         else{
         

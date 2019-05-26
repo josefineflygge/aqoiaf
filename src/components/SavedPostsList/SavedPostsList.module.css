@@ -1,12 +1,15 @@
 .ListContainer{
     display: flex;
     flex-direction: row;
-    align-items: center;
+    align-items: left;
+    max-width: 30em;
+    margin-top: 1em;
 }
 
 .cardContainer{
-    width: 10em;
-    padding-left: 10px;
-    padding-right: 10px;
+    width: 5.5em;
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-bottom: 10px;
 }
 

@@ -1,8 +1,10 @@
 import React, { Component } from 'react'
-import {Button, Icon, Input, Form} from 'semantic-ui-react';
+import {Button, Message, Segment, Grid, Form} from 'semantic-ui-react';
 import {signUp} from '../../../store/actions/authActions';
 import {connect} from 'react-redux';
 import {Redirect} from 'react-router-dom';
+import styles from '../SignInUp.module.css';
+import {Link} from 'react-router-dom';
 
 class SignUp extends Component {
 
@@ -19,13 +21,11 @@ class SignUp extends Component {
             [e.target.id]: e.target.value
         })
 
-
     }
 
     handleSubmit = (e) => {
 
         e.preventDefault(); //don't refresh on submit
-        console.log("State: ", this.state)
         this.props.signUp(this.state)
 
     }
@@ -33,7 +33,7 @@ class SignUp extends Component {
 
   render() {
 
-    const { authError } = this.props;
+    const { signUpError } = this.props;
 
     const {auth} = this.props;
     if(auth.uid) {
@@ -42,43 +42,50 @@ class SignUp extends Component {
 
 
     return (
-      <div>
-          
-        <Form onSubmit={this.handleSubmit}>
-            <Form.Field>
-                <label>First Name</label>
-                <Input id="firstName"  iconPosition='left' placeholder='First Name' onChange={this.handleChange}>
-                    <Icon name='user' />
-                    <input />
-                </Input>
-            </Form.Field>
-            <Form.Field>
-                <label>Last Name</label>
-                <Input id="lastName"  iconPosition='left' placeholder='Last Name' onChange={this.handleChange}>
-                    <Icon name='user' />
-                    <input />
-                </Input>
-            </Form.Field>
+      
 
-            <Form.Field>
-                <label >E-mail</label>
-                <Input type="text" id="email" iconPosition='left' placeholder='E-mail' onChange={this.handleChange}>
-                    <Icon name='at' />
-                    <input />
-                </Input>
-            </Form.Field>
-        
 
-            <Form.Field>
-                <label>Password</label>
-                <Input id="password" placeholder='Password' onChange={this.handleChange} />
-            </Form.Field>
-          
-            <Button type='submit' content='Register' icon='right arrow' labelPosition='right' />
-            <div style={{marginTop: '20px'}}>
-              { authError ? (<p>{authError}</p>) : null}
-            </div>
-        </Form>
+    <div className={styles.Container}>
+          <Grid textAlign='center' style={{ height: '100vh', width:'inherit' }} verticalAlign='middle'>
+            <Grid.Column >
+              <h2>
+                Sign Up
+              </h2>
+              <Form size='large' onSubmit={this.handleSubmit}>
+                <Segment stacked>
+                  <Form.Input id="firstName" fluid icon='user' iconPosition='left' placeholder='First name' onChange={this.handleChange} />
+                  <Form.Input id="lastName" fluid icon='user' iconPosition='left' placeholder='Last name' onChange={this.handleChange} />
+                  <Form.Input
+                    id="email"
+                    fluid
+                    icon='lock'
+                    iconPosition='left'
+                    placeholder='E-mail'
+                    type='email'
+                    onChange={this.handleChange} 
+                  />
+                  <Form.Input
+                    id="password"
+                    fluid
+                    icon='lock'
+                    iconPosition='left'
+                    placeholder='Password'
+                    type='password'
+                    onChange={this.handleChange} 
+                  />
+                  <Button type='submit' color='grey' fluid size='large'>
+                    Register
+                  </Button>
+                </Segment>
+               
+              </Form>
+              <Message size="mini">
+            Already have an account? <Link to='/signin'>Sign In</Link>
+            { signUpError ? (<p>{signUpError}</p>) : null}
+           </Message>
+            </Grid.Column>
+          </Grid>
+      
 
 
       </div>
@@ -87,9 +94,8 @@ class SignUp extends Component {
 }
 
 const mapStateToprops = (state) => {
-    console.log("Firebase :", state.firebase);
     return{
-      authError: state.auth.authError,
+      signUpError: state.auth.signUpError,
       auth: state.firebase.auth
     }
   }

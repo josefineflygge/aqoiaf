@@ -1,7 +1,6 @@
 import React from 'react';
 
 import { Card, Image } from 'semantic-ui-react';
-import lannisterImg from '../../../assets/images/lannister.jpg';
 
 
 const HousePost = (props) => {
@@ -9,7 +8,7 @@ const HousePost = (props) => {
         return (
 
         <Card>
-            <Image src={lannisterImg} />
+            <Image src={props.post.image} />
             <Card.Content>
             <Card.Header>{props.post.name}</Card.Header>
             <Card.Meta>{props.post.type}</Card.Meta>

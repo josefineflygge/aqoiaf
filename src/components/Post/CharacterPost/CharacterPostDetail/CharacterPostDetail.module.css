@@ -1,0 +1,30 @@
+.Container{
+    margin-top: 100px;
+
+
+}
+
+.Container p {
+    display: block
+}
+
+
+.relatedLink{
+    color: #859ab2;
+    margin-left: 2px;
+    margin-right: 2px;
+    display: inline;
+}
+
+.relatedLink:hover{
+   color: #fff;
+}
+
+.Date{
+    margin-top: 20px;
+    color: #859ab2;
+    font-size: 13px;
+}
+
+
+

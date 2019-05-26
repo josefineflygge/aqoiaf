@@ -1,8 +1,10 @@
 import React, { Component } from 'react'
-import {Button, Input, Icon, Form} from 'semantic-ui-react';
+import {Button, Message, Segment, Grid, Form} from 'semantic-ui-react';
 import {connect} from 'react-redux';
 import { signIn } from '../../../store/actions/authActions';
 import {Redirect} from 'react-router-dom';
+import styles from '../SignInUp.module.css';
+import {Link} from 'react-router-dom';
 
 class SignIn extends Component {
 
@@ -12,6 +14,7 @@ class SignIn extends Component {
     }
 
     handleChange = (e) => {
+    
         this.setState({
             [e.target.id]: e.target.value
         })
@@ -28,7 +31,7 @@ class SignIn extends Component {
 
   render() {
 
-    const { authError } = this.props;
+    const { loginError } = this.props;
 
     const {auth} = this.props;
     if(auth.uid) {
@@ -36,27 +39,37 @@ class SignIn extends Component {
     } 
 
     return (
-      <div>
-          <h2>Sign in</h2>
-        <Form onSubmit={this.handleSubmit}>
-            <Form.Field>
-            <label >E-mail</label>
-            <Input id="email" iconPosition='left' placeholder='Email' onChange={this.handleChange}>
-                <Icon name='at' />
-                <input />
-            </Input>
-            </Form.Field>
-        
-            <Form.Field>
-            <label>Password</label>
-            <Input type="password" id="password" placeholder='Password' onChange={this.handleChange} />
-            </Form.Field>
-
-            <Button type='submit' content='Login' icon='right arrow' labelPosition='right' />
-            <div style={{marginTop: '20px'}}>
-              { authError ? (<p>{authError}</p>) : null}
-            </div>
-        </Form>
+      <div className={styles.Container}>
+          <Grid textAlign='center' style={{ height: '100vh', width:'inherit' }} verticalAlign='middle'>
+            <Grid.Column >
+              <h2>
+                Sign in
+              </h2>
+              <Form size='large' onSubmit={this.handleSubmit}>
+                <Segment stacked>
+                  <Form.Input id="email" fluid icon='user' iconPosition='left' placeholder='E-mail address' onChange={this.handleChange} />
+                  <Form.Input
+                    id="password"
+                    fluid
+                    icon='lock'
+                    iconPosition='left'
+                    placeholder='Password'
+                    type='password'
+                    onChange={this.handleChange} 
+                  />
+                  <Button type='submit' color='grey' fluid size='large'>
+                    Login
+                  </Button>
+                </Segment>
+               
+              </Form>
+              <Message size="mini">
+            New user? <Link to='/signup'>Sign Up</Link>
+            { loginError ? (<p>{loginError}</p>) : null}
+           </Message>
+            </Grid.Column>
+          </Grid>
+      
 
 
       </div>
@@ -65,9 +78,8 @@ class SignIn extends Component {
 }
 
 const mapStateToprops = (state) => {
-  console.log("Firebase :", state.firebase);
   return{
-    authError: state.auth.authError,
+    loginError: state.auth.loginError,
     auth: state.firebase.auth
   }
 }
