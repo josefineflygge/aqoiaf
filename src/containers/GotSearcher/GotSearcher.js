@@ -16,7 +16,7 @@ class GotSearcher extends Component {
         suggestions: [],
         optionList: [],
         focusedOption: '',
-        redirect: null,
+        redirect: null
     }
 
 
@@ -115,7 +115,7 @@ class GotSearcher extends Component {
 
       renderInputComponent = inputProps => (
 
-                 <Input {...inputProps} size='mini' fluid type='text' action={{ //onKeyDown={this.keyPress}
+                 <Input {...inputProps}  size='mini' fluid type='text' action={{ 
                     icon: "arrow right",
                     onClick: () => {this.handleSearch()}
                   }} />
@@ -145,20 +145,9 @@ class GotSearcher extends Component {
         });
       };
 
-      /*keyPress(e){
-
-        //enter pressed
-        if(e.keyCode === 13){
-           console.log('value', e.target.value);
-           this.handleSearch()
-        }
-      }*/
-
       //User pressed search button or enter when character selected
       handleSearch = () => {
-
         console.log("[handleSearch] : ", this.state.focusedOption);
-
         this.setState({redirect: this.state.focusedOption});
 
       }

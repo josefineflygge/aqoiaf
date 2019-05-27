@@ -5,8 +5,7 @@
 
 .input {
   width: 26em;
-  /*border: 1px solid #aaa;
-  border-radius: 4px;*/
+  font-family: "Roboto Thin", sans-serif important!;
 }
 
 
@@ -15,6 +14,7 @@
 }
 
 .inputOpen {
+  
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
 }

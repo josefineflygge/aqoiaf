@@ -6,6 +6,7 @@ import shuffle from 'shuffle-array';
 import {Link} from 'react-router-dom';
 import {connect} from 'react-redux';
 import defaultImg from '../../../../assets/images/default.png';
+
 class CharacterPostDetail extends Component {
 
   state = {
@@ -131,9 +132,9 @@ class CharacterPostDetail extends Component {
           allegiances: charData.allegiances|| null,
           related: relatedData || null,
           updated: updatedAt
+      })
       }).catch(err => {
         this.setState({noResult: true});
-      })
       
       }
     )
@@ -199,7 +200,7 @@ class CharacterPostDetail extends Component {
           </Grid.Column>
           <Grid.Column width={5}>
             <h2>{info.name}</h2>
-            <h4>{info.house}</h4>
+            <h4><Link className={styles.relatedLink} to={'/house/' + info.house}>{info.house}</Link></h4>
             <p><b>Age:</b> {info.age ? info.age.age : ""}</p>
             <p><b>Titles: </b> {info.titles && info.titles.map(title => title + ", " )}</p> 
             <p><b>Origin: </b> {info.origin && info.origin.map(ori => ori )}</p>

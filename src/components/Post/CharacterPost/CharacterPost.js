@@ -1,6 +1,4 @@
 import React from 'react';
-
-//import styles from './CharacterPost.module.css';
 import {Grid, Typography, Card, CardContent, CardMedia} from '@material-ui/core/';
 import defaultImg from '../../../assets/images/default.png';
 

@@ -1,24 +1,27 @@
 import React from 'react';
-
-import { Card, Image } from 'semantic-ui-react';
+import {Grid, Typography, Card, CardContent, CardMedia} from '@material-ui/core/';
+import defaultImg from '../../../assets/images/default.png';
 
 
 const HousePost = (props) => {
 
+
         return (
-
-        <Card>
-            <Image src={props.post.image} />
-            <Card.Content>
-            <Card.Header>{props.post.name}</Card.Header>
-            <Card.Meta>{props.post.type}</Card.Meta>
-            </Card.Content>
-        </Card>
-
+            <Grid item>
+                    <Card>
+                        <CardMedia component="img" src={props.post.image === "null" ? defaultImg : props.post.image}>
+                        </CardMedia>
+                        <div >
+                            <CardContent>
+                            <Typography variant="subtitle1" color="textSecondary">
+                            {props.post.name}
+                            </Typography>
+                            </CardContent>
+                        </div>
+                    </Card>
+            </Grid>
         )
 }
-
-
 
 
 export default HousePost;
