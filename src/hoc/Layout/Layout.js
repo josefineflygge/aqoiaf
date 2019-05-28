@@ -8,8 +8,7 @@ class Layout extends Component {
     render () {
         return (
             <Aux>
-                <Navbar />
-                {/* Sidedrawer */}             
+                <Navbar />          
                 <main>
                     {this.props.children}
                 </main>

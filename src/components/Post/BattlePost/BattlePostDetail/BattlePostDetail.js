@@ -5,6 +5,8 @@ import styles from './BattlePostDetail.module.css';
 import {Link} from 'react-router-dom';
 import {connect} from 'react-redux';
 import defaultImg from '../../../../assets/images/battle.png';
+import Loader from '../../../Loader/Loader';
+import {Divider, Snackbar, IconButton} from '@material-ui/core';
 
 class BattlePostDetail extends Component {
 
@@ -12,7 +14,9 @@ class BattlePostDetail extends Component {
   state = {
     saved: false,
     noResult: false,
-
+    isLoading: true,
+    open: false,
+    snackbarMessage: ""
   }
 
 
@@ -36,7 +40,6 @@ class BattlePostDetail extends Component {
   .then(res => {
 
       let battleData = res.data; 
-      console.log("battledata: ", battleData )
       let updatedAt = battleData[0].updatedAt.substr(0, battleData[0].updatedAt.indexOf('T'));
 
       self.setState({
@@ -55,11 +58,14 @@ class BattlePostDetail extends Component {
           updated: updatedAt
       })
 
-      console.log("Battle info: ", self.state);
+      self.setState({isLoading: false});
     }
   ).catch(err => {
-    console.log("no such battle");
-    this.setState({noResult: true});
+
+    console.log("Error: ", err);
+    self.setState({noResult: true});
+    self.setState({isLoading: false});
+
   })
 
 
@@ -87,8 +93,7 @@ componentDidUpdate(){
     .then(res => {
 
         let battleData = res.data; 
-        console.log("battledata: ", battleData )
-      let updatedAt = battleData[0].updatedAt.substr(0, battleData[0].updatedAt.indexOf('T'));
+        let updatedAt = battleData[0].updatedAt.substr(0, battleData[0].updatedAt.indexOf('T'));
 
       self.setState({
           noResult: false,
@@ -106,11 +111,15 @@ componentDidUpdate(){
           updated: updatedAt
       })
 
-        console.log("Battle info: ", self.state);
+        self.setState({isLoading: false});
+
       }
     ).catch(err => {
-      console.log("no such battle");
+
+      console.log("Error: ", err);
       this.setState({noResult: true});
+      self.setState({isLoading: false});
+
     })
 
 
@@ -122,28 +131,58 @@ savePostToProfileHandler = () =>{
 
 
   //save
-  if(this.state.saved === false){
+  if(this.state.saved === false && this.props.auth.uid){
 
       //Add new post to users table in content DB
       axios.get("http://83.227.100.168:42132/addpost/U_" + this.props.auth.uid + "/" + this.state.id + "/battle/" + this.state.name + "/" + encodeURIComponent(this.state.imgUrl))
       .then(res => {
-          console.log("[savePostToProfileHandler] : ", res)
-          this.setState({saved: true})
+          console.log(res)
+          this.setState({saved: true, snackbarMessage: "Post saved to profile!"})
+          this.handleOpen();
           }
       )
   }
 
   //unsave
-  else{
+  if(this.state.saved === true && this.props.auth.uid){
 
     //delete post from users table in content DB
     axios.get("http://83.227.100.168:42132/deletepost/U_" + this.props.auth.uid + "/" + this.state.id)
     .then(res => {
-        console.log("[savePostToProfileHandler] : ", res)
-        this.setState({saved: false})
+        console.log(res)
+        this.setState({saved: false, snackbarMessage: "Post removed from profile!" })
+        this.handleOpen();
         }
     )
+  }
+
+  
+  if(!this.props.auth.uid){
+
+    this.setState({snackbarMessage: " Only logged in users can save posts."})
+    this.handleOpen();
+
+  }
+
 }
+
+
+handleOpen = () => this.setState({ open: true })
+
+handleClose = () => this.setState({ open: false })
+
+textFormat(list){
+
+  let formatted = "";
+
+  if(list){
+    
+  formatted = list.map((obj,idx) =>
+  <span key={idx}>{obj}{idx < list.length - 1 ? ', ' : ''}</span> )
+  }
+
+
+  return formatted;
 
 }
 
@@ -152,50 +191,80 @@ render(){
 
   let info = this.state;
   let saveIconColor = this.state.saved ? 'yellow' : 'grey';
+
+  
+  let content = null;
+
+  if(this.state.isLoading){
+    content = <Loader />
+  }
+  else{
+    content =    (
+      <Grid stackable centered verticalAlign="top"> {/* inverted divided="horizontally"  */}
+          <Grid.Row>
+            <Grid.Column width={4}>
+              <Image
+                label={{ as: 'a', color: saveIconColor, corner: 'right', icon: 'star', onClick:this.savePostToProfileHandler }}
+                src={this.state.imgUrl || defaultImg}>
+              </Image>
+            </Grid.Column>
+            <Grid.Column width={5}>
+    
+              <h2>{info.name}</h2>
+              <p><b>Conflict: </b>{info.conflict}</p>
+              <p><b>Faction 1: </b>{this.textFormat(info.facionsOne)}</p>
+              <p><b>Commander: </b> {this.textFormat(info.commandersOne)}</p> 
+              <p><b>Forces: </b> {this.textFormat(info.forcesOne)}</p> 
+    
+
+              <Divider style={{backgroundColor: 'white', marginBottom: '10px'}} />
+    
+              <p><b>Faction 2: </b> {this.textFormat(info.factionsTwo)}</p> 
+              <p><b>Commander: </b> {this.textFormat(info.commandersTwo)}</p> 
+              <p><b>Forces: </b> {this.textFormat(info.forcesTwo)}</p> 
+             
+              <Divider style={{backgroundColor: 'white', marginBottom: '10px'}} />
+    
+              <p><b>Casualties: </b> {this.textFormat(info.casualties)}</p>
+                <p className={styles.Date}> Last Updated: {info.updated}</p>
+            </Grid.Column>
+          </Grid.Row>
+      </Grid>);
+  }
   
   return (
 
     <div className={styles.Container}>
-
-    {this.state.noResult ? (<div><h4>Sorry, there's no battle named "{this.state.name}"...</h4>
-                            <Link to="/">
-                              <Button  inverted color="grey" icon labelPosition='left'>
-                                Go Home
-                                <Icon name='left arrow' />
-                              </Button>
-                            </Link></div>) : 
-    (
-    <Grid stackable centered verticalAlign="top"> {/* inverted divided="horizontally"  */}
-      <Grid.Row>
-        <Grid.Column width={4}>
-          <Image
-            label={{ as: 'a', color: saveIconColor, corner: 'right', icon: 'star', onClick:this.savePostToProfileHandler }}
-            src={this.state.imgUrl || defaultImg}>
-          </Image>
-        </Grid.Column>
-        <Grid.Column width={5}>
-
-          <h2>{info.name}</h2>
-          <p><b>Conflict: </b>{info.conflict}</p>
-          <p><b>Faction 1: </b>{info.factionsOne && info.factionsOne.map(one => one + ", " )}</p>
-          <p><b>Commander: </b> {info.commandersOne && info.commandersOne.map(com => com + ", " )}</p> 
-          <p><b>Forces: </b> {info.forcesOne && info.forcesOne.map(force => force + ", " )}</p> 
-          < br/>
-
-          <p><b>Faction 2: </b> {info.factionsTwo && info.factionsTwo.map(two => two + ", " )}</p> 
-          <p><b>Commander: </b> {info.commandersTwo && info.commandersTwo.map(com_ => com_ + ", " )}</p> 
-          <p><b>Forces: </b> {info.forcesTwo && info.forcesTwo.map(force_ => force_ + ", " )}</p> 
-          < br/>
-
-          <p><b>Casualties: </b> {info.casulaties && info.casulaties.map(cas => cas + "," )}</p>
-            <p className={styles.Date}> Last Updated: {info.updated}</p>
-        </Grid.Column>
-      </Grid.Row>
-  </Grid>)
-}
-
-    
-        
+      <Snackbar
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'center',
+          }}
+          autoHideDuration={2000}
+          open={this.state.open}
+          onClose={this.handleClose}
+          ContentProps={{
+            'aria-describedby': 'message-id',
+          }}
+          message={<span id="message-id">{this.state.snackbarMessage}</span>}
+          action={[
+            <IconButton
+              key="close"
+              aria-label="Close"
+              color="inherit"
+              onClick={this.handleClose}
+            >
+              <Icon size="small" name="close" />
+            </IconButton>,
+            ]}
+      /> 
+      {this.state.noResult ? (<div><h4>Oops. There's no battle named "{this.state.name}"...</h4>
+                              <Link to="/">
+                                <Button  inverted color="grey" icon labelPosition='left'>
+                                  Go Home
+                                  <Icon name='left arrow' />
+                                </Button>
+                              </Link></div>) : content }
     </div>
   )
 }

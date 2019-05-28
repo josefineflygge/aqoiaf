@@ -6,11 +6,12 @@
  align-items: left;
  justify-content: center;
  text-align: left;
+ margin:15px 15px;
 }
 
 
 .BigContainer {
-margin-top: 5em;
+margin-top: 6em;
 margin-bottom: 4em;
 width: 90%;
  display:flex;

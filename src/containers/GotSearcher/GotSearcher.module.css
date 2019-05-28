@@ -1,11 +1,19 @@
 
 .container {
   position: relative;
+  
 }
 
 .input {
   width: 26em;
   font-family: "Roboto Thin", sans-serif important!;
+}
+
+@media screen and (max-width: 500px) {
+  .input {
+    width: 22em;
+    height: 4em;
+  }
 }
 
 
@@ -14,7 +22,6 @@
 }
 
 .inputOpen {
-  
   border-bottom-left-radius: 0;
   border-bottom-right-radius: 0;
 }

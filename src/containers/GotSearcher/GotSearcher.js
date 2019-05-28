@@ -4,6 +4,9 @@ import styles from './GotSearcher.module.css';
 import {Input} from 'semantic-ui-react';
 import {Redirect} from 'react-router-dom';
 
+import {setOptions} from '../../store/actions/searchActions';
+import {connect} from 'react-redux';
+
 import Autosuggest from 'react-autosuggest';
 
 import axios from 'axios';
@@ -14,7 +17,7 @@ class GotSearcher extends Component {
     state = {
         value: '',
         suggestions: [],
-        optionList: [],
+        //optionList: [],
         focusedOption: '',
         redirect: null
     }
@@ -46,24 +49,9 @@ class GotSearcher extends Component {
                 return  {name: battle.name, type: 'battle'}
           });
 
-            self.setState({
-                optionList: [
-                    {
-                        title: 'Characters',
-                        options: charList
-                    },
-                    {
-                        title: 'Houses',
-                        options: houseList
-                    },
+      
+          self.props.setOptions(charList, battleList, houseList);
 
-                    {
-                        title: 'Battles',
-                        options: battleList
-                    },
-                ]});
-
-              
 
           }))
           .catch(error => console.log(error));
@@ -81,7 +69,7 @@ class GotSearcher extends Component {
             return [];
           }
     
-        let suggestList = Object.assign([], this.state.optionList);
+        let suggestList = Object.assign([], this.props.optionList);
 
         return suggestList.map(section => {
                 return {
@@ -95,8 +83,6 @@ class GotSearcher extends Component {
     };
 
     getSuggestionValue(suggestion) {
-
-        console.log("[getSuggestionValue] suggestion: ", suggestion)
         this.setState({focusedOption: suggestion});
         return suggestion.name;
     }
@@ -115,8 +101,8 @@ class GotSearcher extends Component {
 
       renderInputComponent = inputProps => (
 
-                 <Input {...inputProps}  size='mini' fluid type='text' action={{ 
-                    icon: "arrow right",
+                 <Input {...inputProps} size='mini' fluid type='text' action={{ 
+                    icon: "search",
                     onClick: () => {this.handleSearch()}
                   }} />
       );
@@ -147,7 +133,6 @@ class GotSearcher extends Component {
 
       //User pressed search button or enter when character selected
       handleSearch = () => {
-        console.log("[handleSearch] : ", this.state.focusedOption);
         this.setState({redirect: this.state.focusedOption});
 
       }
@@ -214,7 +199,23 @@ class GotSearcher extends Component {
     }
 }
 
+const mapStateToProps = (state) => {
+
+  return{
+   optionList: state.search.optionList,
+  }
+
+}
+
+const mapDispatchToProps = (dispatch) => {
+
+  return {
+    setOptions: (chars, battles, houses) => dispatch(setOptions(chars, battles, houses))
+  }
+
+}
 
 
 
-export default GotSearcher;
+
+export default connect(mapStateToProps, mapDispatchToProps)(GotSearcher);

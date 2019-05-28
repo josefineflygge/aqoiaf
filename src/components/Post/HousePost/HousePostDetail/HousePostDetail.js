@@ -4,14 +4,19 @@ import {Grid, Image, Icon, Button} from 'semantic-ui-react';
 import styles from './HousePostDetail.module.css';
 import {Link} from 'react-router-dom';
 import {connect} from 'react-redux';
-import defaultImg from '../../../../assets/images/default.png';
+import defaultImg from '../../../../assets/images/fort.png';
 import shuffle from 'shuffle-array';
+import Loader from '../../../Loader/Loader';
+import {Divider, Snackbar, IconButton} from '@material-ui/core';
 
 class HousePostDetail extends Component {
 
   state = {
       saved: false,
       noResult: false,
+      isLoading: true,
+      open: false,
+      snackbarMessage:""
   }
 
 
@@ -39,8 +44,8 @@ class HousePostDetail extends Component {
       let houseData = house.data; 
       let charData = chars.data;
 
-      console.log("house data", houseData)
-      console.log("char data", charData)
+      /*console.log("house data", houseData)
+      console.log("char data", charData)*/
 
       let relatedChars = charData;
         
@@ -68,10 +73,13 @@ class HousePostDetail extends Component {
           relatedChars: relatedChars,
           updated: updatedAt
       })
-        console.log("House info: ", self.state);
+
+        self.setState({isLoading: false});
+
     })).catch(err => {
-    console.log("error", err);
+    console.log("Error: ", err);
     self.setState({noResult: true});
+    self.setState({isLoading: false});
     });
 
     
@@ -79,10 +87,14 @@ class HousePostDetail extends Component {
 
 
   componentDidUpdate(){
+   
 
     if(this.props.match.params.name !== this.state.name){
+
+      
         
         let self = this;
+        self.setState({isLoading: true});
         let name = this.props.match.params.name;
         this.setState({name: name});
         
@@ -104,8 +116,8 @@ class HousePostDetail extends Component {
           let houseData = house.data; 
           let charData = chars.data;
 
-          console.log("house data", houseData)
-          console.log("char data", houseData)
+          /*console.log("house data", houseData)
+          console.log("char data", houseData)*/
 
           let relatedChars = charData;
         
@@ -133,11 +145,13 @@ class HousePostDetail extends Component {
               relatedChars: relatedChars,
               updated: updatedAt
           })
-            console.log("House info: ", self.state);
+
+            self.setState({isLoading: false});
         })
         ).catch(err => {
-        console.log("no such house");
+        console.log("Error:", err);
         self.setState({noResult: true});
+        self.setState({isLoading: false});
         })
 
     }
@@ -148,28 +162,60 @@ class HousePostDetail extends Component {
 
 
     //save
-    if(this.state.saved === false){
+    if(this.state.saved === false && this.props.auth.uid){
 
         //Add new post to users table in content DB
         axios.get("http://83.227.100.168:42132/addpost/U_" + this.props.auth.uid + "/" + this.state.id + "/house/" + this.state.name + "/" + encodeURIComponent(this.state.imgUrl))
         .then(res => {
-            console.log("[savePostToProfileHandler] : ", res)
-            this.setState({saved: true})
+            console.log(res)
+            this.setState({saved: true, snackbarMessage: "Post saved to profile!"})
+            this.handleOpen();
             }
         )
+
     }
 
     //unsave
-    else{
+    if(this.state.saved === true && this.props.auth.uid){
 
       //delete post from users table in content DB
       axios.get("http://83.227.100.168:42132/deletepost/U_" + this.props.auth.uid + "/" + this.state.id)
       .then(res => {
-          console.log("[savePostToProfileHandler] : ", res)
-          this.setState({saved: false})
+          console.log(res)
+          this.setState({saved: false, snackbarMessage: "Post removed from profile!"})
+          this.handleOpen();
           }
       )
   }
+
+  if(!this.props.auth.uid){
+
+    this.setState({snackbarMessage: " Only logged in users can save posts."})
+    this.handleOpen();
+
+  }
+
+
+  }
+
+
+
+  handleOpen = () => this.setState({ open: true })
+
+  handleClose = () => this.setState({ open: false })
+
+  textFormat(list){
+
+    let formatted = "";
+
+    if(list){
+      
+    formatted = list.map((obj,idx) =>
+    <span key={idx}>{obj}{idx < list.length - 1 ? ', ' : ''}</span> )
+    }
+
+
+    return formatted;
 
   }
   
@@ -179,20 +225,17 @@ class HousePostDetail extends Component {
 
     let info = this.state;
     let saveIconColor = this.state.saved ? 'yellow' : 'grey';
-    
-    return (
 
-      <div className={styles.Container}>
+    let content = null;
 
-      {this.state.noResult ? (<div><h4>Shame, shame, shame. There's no house named "{this.state.name}"...</h4>
-                              <Link to="/">
-                                <Button  inverted color="grey" icon labelPosition='left'>
-                                  Go Home
-                                  <Icon name='left arrow' />
-                                </Button>
-                              </Link></div>) : 
-      (
-      <Grid stackable centered verticalAlign="top"> {/* inverted divided="horizontally"  */}
+    if(this.state.isLoading){
+      content = <Loader />
+    }
+    else{
+      content = (
+
+
+        <Grid stackable centered verticalAlign="top"> {/* inverted divided="horizontally"  */}
         <Grid.Row>
           <Grid.Column width={4}>
             <Image
@@ -202,24 +245,65 @@ class HousePostDetail extends Component {
           </Grid.Column>
           <Grid.Column width={5}>
             <h2>{info.name}</h2>
-            <p><b>Words:</b> {info.words}</p>
-            <p><b>Seat: </b> {info.seat && info.seat.map(seat => seat + ", " )}</p> 
-            <p><b>Region: </b> {info.region && info.region.map(reg => reg )}</p>
-            <p> <b>Religion: </b> {info.religion && info.religion.map(rel => rel )}</p>
-            <b>Related characters:    {info.relatedChars && info.relatedChars.map(char =>{
+            <p><b>Words:</b>{info.words}</p>
+            <p><b>Seat: </b> {this.textFormat(info.seat)}</p> 
+            <p><b>Region: </b> {this.textFormat(info.region)}</p>
+            <p> <b>Religion: </b>{this.textFormat(info.religion)}</p>
+            <Divider style={{backgroundColor: 'white', marginBottom: '10px'}} />
+            <b>Related characters:    {info.relatedChars && info.relatedChars.map((obj,idx) =>{
                 return(    
-                            <Link className={styles.relatedLink} key={char.id} to={'/character/' + char.name}>
-                              {char.name}
-                            </Link>
+                  <Link className={styles.relatedLink} key={obj._id} to={'/character/' + obj.name}>
+                  {obj.name}{idx < info.relatedChars.length - 1 ? ', ' : ''}
+                  </Link>
                   
                 );
               })} </b> 
               <p className={styles.Date}> Last Updated: {info.updated}</p>
           </Grid.Column>
         </Grid.Row>
-    </Grid>)
-  }
+    </Grid>
+
+
+
+    )
+   }
     
+    return (
+
+      <div className={styles.Container}>
+
+        <Snackbar
+                  anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'center',
+                  }}
+                  autoHideDuration={2000}
+                  open={this.state.open}
+                  onClose={this.handleClose}
+                  ContentProps={{
+                    'aria-describedby': 'message-id',
+                  }}
+                  message={<span id="message-id">{this.state.snackbarMessage}</span>}
+                  action={[
+                    <IconButton
+                      key="close"
+                      aria-label="Close"
+                      color="inherit"
+                      onClick={this.handleClose}
+                    >
+                      <Icon size="small" name="close" />
+                    </IconButton>,
+                    ]}
+              /> 
+
+      {this.state.noResult ? (<div><h4>Oops. There's no house named "{this.state.name}"...</h4>
+                              <Link to="/">
+                                <Button  inverted color="grey" icon labelPosition='left'>
+                                  Go Home
+                                  <Icon name='left arrow' />
+                                </Button>
+                              </Link></div>) : content 
+      }
           
       </div>
     )

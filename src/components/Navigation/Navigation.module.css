@@ -5,9 +5,19 @@
     width: 100%;
     height: 80px;
     left: 0;
-   background-color: #191b20; 
+    z-index: 99;
+   
+   background-color: rgba(25,27,32,0.9); /*#191b20; */
 }
 
-.Menu{
-    background-color: #191b20; 
+
+
+.Active div {
+    
+    text-decoration: underline;
+   
 }
+
+
+
+

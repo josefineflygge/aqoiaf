@@ -19,11 +19,13 @@ main {
 p {
   font-family: "Roboto Thin", sans-serif;
   font-size: 13px;
+  color: #fff;  color: #fff; 
 }
 
 b {
   font-family: "Roboto", sans-serif;
   font-size: 13px;
+  color: #fff; 
 }
 
 h3 {
@@ -40,11 +42,14 @@ h4 {
   font-size: 18px;
   margin-left:3px;
   margin-right:3px;
+  color: #fff; 
 }
+
 
 h5 {
   font-family: "Roboto", sans-serif;
   font-size: 15px;
+  color: #fff; 
 }
 
 
@@ -55,6 +60,22 @@ h1{
   padding-top: 15px;
   padding-bottom: 15px;
   color: #fff; /*#859ab2*/
+}
+
+@media screen and (max-width: 500px) {
+  h1 {
+    font-size: 40px;
+  }
+}
+input {
+  font-family: "Roboto Thin", sans-serif important!;
+}
+
+h6 {
+  font-family: "Got Font";
+  font-size: 15px;
+  letter-spacing: 2px;
+  color: #fff; 
 }
 
 

@@ -48,13 +48,10 @@ export const signUp = (newUser) => {
         firebase.auth().createUserWithEmailAndPassword(
             newUser.email, newUser.password
             ).then((resp) =>{
-
-                console.log("resp uid", resp.user.uid)
-
                 //Add user table to content DB, table name has to start with letter
                 axios.get("http://83.227.100.168:42132/adduser/U_" + resp.user.uid)
                 .then(res => {
-                    console.log("Added user message:", res)
+                    console.log(res)
                     }
                 )
 

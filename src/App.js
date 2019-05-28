@@ -9,6 +9,7 @@ import SignIn from './containers/Auth/SignIn/SignIn';
 import SignUp from './containers/Auth/SignUp/SignUp';
 import BattlePostDetail from './components/Post/BattlePost/BattlePostDetail/BattlePostDetail';
 import HousePostDetail from './components/Post/HousePost/HousePostDetail/HousePostDetail';
+import Forum from './containers/Forum/Forum';
 
 class App extends Component {
   render() {
@@ -18,6 +19,7 @@ class App extends Component {
           <Layout>
             <Switch>
               <Route path="/profile" component={UserProfile} />
+              <Route path="/forum" component={Forum} />
               <Route path="/" exact component={Home} />
               <Route path="/character/:name" exact  component={CharacterPostDetail} />
               <Route path="/signin" component={SignIn} />

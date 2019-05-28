@@ -1,13 +1,13 @@
 
 const express = require('express');
 const app = express();
+var socket = require('socket.io');
 
 const sqlite3 = require('sqlite3');
 //const db = new sqlite3.Database('got_db.db');
 const DB_PATH = 'got_db';
 
 // base url: http://192.168.10.212:8000/
-
 //Enable cross origin resource sharing
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
@@ -15,7 +15,6 @@ app.use(function(req, res, next) {
   res.header("Content-Type", "application/json; charset=utf-8");
   next();
 });
-
 
 const db = new sqlite3.Database(DB_PATH, sqlite3.OPEN_READWRITE, function(err){
   if (err) {
@@ -29,8 +28,34 @@ const db = new sqlite3.Database(DB_PATH, sqlite3.OPEN_READWRITE, function(err){
 var HTTP_PORT = 8000;
 
 // Start server
-app.listen(HTTP_PORT, () => {
+var server = app.listen(HTTP_PORT, () => {
     console.log("Server running on port %PORT%".replace("%PORT%",HTTP_PORT))
+});
+
+//Initialize socket.io
+var io = socket(server);
+
+io.on('connection', function(socket){
+
+  console.log("Made socket connection in server")
+
+  socket.on('create_socket', function(data){
+    console.log(data);
+});
+
+  //Here we listen on a new namespace called "incoming data"
+  socket.on("incoming data", (data)=>{
+
+    console.log(data);
+    let test = "hej från servern";
+    //Here we broadcast it out to all other sockets EXCLUDING the socket which sent us the data
+   socket.emit("test response", test);
+});
+
+
+  //A special namespace "disconnect" for when a client disconnects
+  socket.on("disconnect", () => console.log("Client disconnected"));
+
 });
 
 // root

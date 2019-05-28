@@ -7,7 +7,7 @@ import CharacterPost from '../../components/Post/CharacterPost/CharacterPost';
 import HousePost from '../../components/Post/HousePost/HousePost';
 import BattlePost from '../../components/Post/BattlePost/BattlePost';
 import {Grid, Divider} from '@material-ui/core/';
-
+import {Icon} from 'semantic-ui-react';
 import Aux from '../../hoc/Auxillary';
 
 
@@ -18,55 +18,64 @@ const savedPostsList = (props) => {
     return (
 
         <Aux>
-        <h4>Characters</h4>
-        <Divider  style={{backgroundColor: 'white'}} />
         <div className={styles.ListContainer}>
+
         <Grid
             container
             direction="row"
             justify="flex-start"
             alignItems="center"
         >
-     
-    
-      
 
-            {props.posts && props.posts.map(post =>{
+            <Grid item xs={12} sm={12} lg={12}>
+                <div className={styles.HeaderContainer}>
+                    <h4>
+                        <Icon name='chess knight' /> Characters
+                    </h4>
+                    <Divider style={{backgroundColor: 'white'}} />
+                </div>
+            </Grid> 
+            {props.posts && props.posts
+            .filter(post => post.type === "character")
+            .map((post) => { return(<div key={post.id} className={styles.cardContainer}>
+                                    <Link to={'/character/' + post.name}>
+                                        <CharacterPost post={post} key={post.id} />
+                                    </Link>
+                            </div>) }
+            )}
 
-                let postComp;
+            <Grid item xs={12} sm={12} lg={12}>
+                <div className={styles.HeaderContainer}>
+                    <h4>
+                        <Icon name='chess rook' /> Houses
+                    </h4>
+                    <Divider  style={{backgroundColor: 'white'}} />
+                </div>
+            </Grid> 
+            {props.posts && props.posts
+            .filter(post => post.type === "house")
+            .map((post) => { return(<div key={post.id} className={styles.cardContainer}>
+                                    <Link to={'/house/' + post.name}><HousePost post={post} key={post.id} /></Link>
+                                </div>); }
+            )}
 
-                switch(post.type){
-                    case 'character':
-                        postComp = <CharacterPost post={post} key={post.id} />
-                        break;
+            <Grid item xs={12} sm={12} lg={12}>  
+                <div className={styles.HeaderContainer}> 
+                        <h4>
+                            <Icon name='shield alternate' /> Battles
+                        </h4>
+                        <Divider style={{backgroundColor: 'white'}} />
+                </div>
+            </Grid>      
+            {props.posts && props.posts
+            .filter(post => post.type === "battle")
+            .map((post) => { return(<div key={post.id} className={styles.cardContainer}>
+                                    <Link to={'/battle/' + post.name}><BattlePost post={post} key={post.id} /></Link>
+                                </div>); }
+            )}
 
-                    case 'house':
-                        postComp = <HousePost  post={post} key={post.id} />
-                        break;
-
-                    case 'battle':
-                        postComp = <BattlePost post={post} key={post.id} />
-                        break;
-                    
-                    default:
-                    console.log("post type not defined"); 
-                    break;
-                } 
-                
-                return(    
-                    <div key={post.id} className={styles.cardContainer}>
-                        <Link to={'/' + post.type + '/' + post.name}>{postComp}</Link>
-                    </div>
-                );
-
-            })}  
-
-            </Grid>       
+        </Grid>       
         </div>
-        <h4>Houses</h4>
-        <Divider  style={{backgroundColor: 'white'}} />
-        <h4>Battles</h4> 
-        <Divider  style={{backgroundColor: 'white'}} />
         </Aux>
 
     )

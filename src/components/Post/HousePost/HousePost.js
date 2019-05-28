@@ -1,6 +1,6 @@
 import React from 'react';
 import {Grid, Typography, Card, CardContent, CardMedia} from '@material-ui/core/';
-import defaultImg from '../../../assets/images/default.png';
+import defaultImg from '../../../assets/images/fort.png';
 
 
 const HousePost = (props) => {

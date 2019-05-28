@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import styles from './UserProfile.module.css';
 import { getSavedPosts } from '../../store/actions/savedPostsActions';
 import { Redirect } from 'react-router-dom';
+import Loader from '../../components/Loader/Loader';
 
 class UserProfile extends Component {
 
@@ -19,19 +20,33 @@ class UserProfile extends Component {
 
 
   render(){
-
-    const {auth, profile} = this.props;
+ 
+    const {auth, profile, isLoading} = this.props;
     if(!auth.uid) {
       return <Redirect to="/signin"></Redirect>
     } 
-  
-    return(
-      <div className={styles.BigContainer}>
+
+    let content = null;
+
+    if(isLoading) {
+      content = (<Loader />);
+      
+    }
+    else{
+      content = 
+      (
         <div className={styles.Container}>
-        <h3>{profile.firstName}s profile</h3>
+          <h4>Hi, {profile.firstName}!</h4>
           <h3>Saved posts</h3>
           <PostsList posts={this.props.savedPosts}/>
         </div>
+        )
+    }
+
+  
+    return(
+      <div className={styles.BigContainer}>
+       {content}
       </div>
     )
 

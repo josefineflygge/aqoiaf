@@ -2,7 +2,7 @@
     display: flex;
     flex-direction: row;
     align-items: left;
-    max-width: 30em;
+    max-width: 40em;
     margin-top: 1em;
 }
 
@@ -11,5 +11,10 @@
     margin-left: 10px;
     margin-right: 10px;
     margin-bottom: 10px;
+}
+
+.HeaderContainer{
+    margin-bottom: 15px;
+    margin-top: 20px;
 }
 

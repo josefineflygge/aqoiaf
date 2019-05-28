@@ -1,6 +1,6 @@
 import React from 'react';
 import {Grid, Typography, Card, CardContent, CardMedia} from '@material-ui/core/';
-import defaultImg from '../../../assets/images/default.png';
+import defaultImg from '../../../assets/images/person.png';
 
 
 const CharacterPost = (props) => {
@@ -9,7 +9,7 @@ const CharacterPost = (props) => {
         return (
             <Grid item>
                     <Card>
-                        <CardMedia component="img" src={props.post.image === "null" ? defaultImg : props.post.image}>
+                        <CardMedia component="img" src={props.post.image === "null" || !props.post.image ? defaultImg : props.post.image}>
                         </CardMedia>
                         <div >
                             <CardContent>
