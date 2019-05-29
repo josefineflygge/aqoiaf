@@ -7,7 +7,12 @@ const sqlite3 = require('sqlite3');
 //const db = new sqlite3.Database('got_db.db');
 const DB_PATH = 'got_db';
 
-// base url: http://192.168.10.212:8000/
+/*
+app base url lan: http://192.168.10.212:8000/
+app base url wan: 83.227.100.168:42132
+rasppi base url wan: 83.227.100.168:42133
+*/
+
 //Enable cross origin resource sharing
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
@@ -37,24 +42,61 @@ var io = socket(server);
 
 io.on('connection', function(socket){
 
-  console.log("Made socket connection in server")
+      console.log("Made socket connection")
+      
+      socket.on('create_socket', function(data){
+          
+          console.log(data);
 
-  socket.on('create_socket', function(data){
-    console.log(data);
-});
+          let query = `SELECT * FROM feed`;
 
-  //Here we listen on a new namespace called "incoming data"
-  socket.on("incoming data", (data)=>{
+          db.all(query, (err, result) => {
 
-    console.log(data);
-    let test = "hej från servern";
-    //Here we broadcast it out to all other sockets EXCLUDING the socket which sent us the data
-   socket.emit("test response", test);
-});
+            if (err) {
+               throw err;
+               console.log("Error when fetching msgs")
+            }
+            else{
+              console.log('fetched msgs');
+              socket.emit('fetch msgs', result);
+            }
+  
+      });
 
 
-  //A special namespace "disconnect" for when a client disconnects
-  socket.on("disconnect", () => console.log("Client disconnected"));
+        socket.emit('fetch msgs', )
+      });
+
+      //Here we listen on a new namespace called "incoming data"
+      socket.on("incoming message", (data)=>{
+
+        console.log(data);
+
+        var name = data.name;
+        var date = data.date;
+        var content = data.content;
+
+        var query = `INSERT INTO feed (name, content, date) VALUES ("${name}", "${content}", "${date}")`;
+        
+        db.all(query, (err, result) => {
+
+          if (err) {
+            throw err;
+            console.log("Error: New message failed");
+          }
+          else{
+            console.log("New message posted: ", data);
+            io.emit('message from server', data);
+          }
+
+        });
+
+     
+    });
+
+
+      //A special namespace "disconnect" for when a client disconnects
+      socket.on("disconnect", () => console.log("Client disconnected"));
 
 });
 
@@ -65,6 +107,27 @@ app.get('/', function (req, res){
 
 
 // create a new user table by userid from firebase
+app.get('/adduser/:id', (req, res) => {
+
+  var userID = req.params.id;
+  console.log("userID: ", userID);
+
+
+  let query = `CREATE TABLE ${userID} (id TEXT, type TEXT, name TEXT, image VARCHAR(255))`;
+
+
+    db.all(query, (err, rows) => {
+
+        if (err) {
+            res.send("Error occurred when adding user");//throw err;
+        }
+        else{
+          res.send("Added user: "+userID);
+        }
+
+  });
+});
+
 app.get('/adduser/:id', (req, res) => {
 
   var userID = req.params.id;

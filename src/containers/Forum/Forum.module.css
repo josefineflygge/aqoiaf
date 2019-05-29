@@ -1,0 +1,33 @@
+.Container{
+display: flex;
+flex-direction: column;
+align-items: center;
+margin-top: 4em;
+margin-bottom: 4em;
+text-align: left;
+}
+
+.Feed{
+    max-height: 20em;
+    overflow-y: scroll;
+}
+
+.Comment{
+    width: 20em;
+    text-align: left;
+    margin-bottom: 1em;
+    background-color: #000 important!;
+}
+
+.Grid{
+    margin-top:3em;
+}
+
+.Content{
+    color:#000;
+}
+
+.Form{
+    width: 30em;
+
+}

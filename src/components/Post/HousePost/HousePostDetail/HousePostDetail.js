@@ -44,37 +44,46 @@ class HousePostDetail extends Component {
       let houseData = house.data; 
       let charData = chars.data;
 
-      /*console.log("house data", houseData)
-      console.log("char data", charData)*/
+      //Handle house request failed
+      if(houseData.length > 0){
 
-      let relatedChars = charData;
+
+        let relatedChars = charData;
         
-      //random characters from related list
-      if(charData.length >= 4){
-        charData = shuffle(charData);
-        relatedChars = [
-        charData[0], 
-        charData[1],
-        charData[2],
-        charData[3]]
-      }
-
-      let updatedAt = houseData[0].updatedAt.substr(0, houseData[0].updatedAt.indexOf('T'));
-
-      self.setState({
-          noResult: false,
-          id: houseData[0]._id,
-          name: houseData[0].name,
-          seat: houseData[0].seat || null,
-          region: houseData[0].region || null, 
-          religion: houseData[0].religion || null,
-          imgUrl: houseData[0].logoURL || null,
-          words: houseData[0].words || null,
-          relatedChars: relatedChars,
-          updated: updatedAt
-      })
+        //Random characters from related list
+        if(charData.length >= 4){
+          charData = shuffle(charData);
+          relatedChars = [
+          charData[0], 
+          charData[1],
+          charData[2],
+          charData[3]]
+        }
+  
+        let updatedAt = houseData[0].updatedAt.substr(0, houseData[0].updatedAt.indexOf('T'));
+  
+        self.setState({
+            noResult: false,
+            id: houseData[0]._id,
+            name: houseData[0].name,
+            seat: houseData[0].seat || null,
+            region: houseData[0].region || null, 
+            religion: houseData[0].religion || null,
+            imgUrl: houseData[0].logoURL || null,
+            words: houseData[0].words || null,
+            relatedChars: relatedChars,
+            updated: updatedAt
+        })
 
         self.setState({isLoading: false});
+
+      }else{
+        self.setState({isLoading: false, noResult: true});
+      }
+    
+
+
+        
 
     })).catch(err => {
     console.log("Error: ", err);

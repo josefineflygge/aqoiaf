@@ -24,8 +24,8 @@ class App extends Component {
               <Route path="/character/:name" exact  component={CharacterPostDetail} />
               <Route path="/signin" component={SignIn} />
               <Route path="/signup" component={SignUp} />
-              <Route path="/house/:name" component={HousePostDetail} />
-              <Route path="/battle/:name" component={BattlePostDetail} />
+              <Route path="/house/:name" exact component={HousePostDetail} />
+              <Route path="/battle/:name" exact component={BattlePostDetail} />
             </Switch>
           </Layout>
         </header>

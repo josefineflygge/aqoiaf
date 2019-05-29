@@ -5,7 +5,6 @@ import Aux from '../../hoc/Auxillary';
 
 import {connect} from 'react-redux';
 import {signOut} from '../../store/actions/authActions';
-//import logoImg from '../../assets/images/logo.png';
 import {Fab} from '@material-ui/core';
 import styles from './Navigation.module.css';
 
