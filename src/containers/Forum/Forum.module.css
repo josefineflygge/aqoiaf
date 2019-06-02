@@ -10,10 +10,12 @@ text-align: left;
 .Feed{
     max-height: 20em;
     overflow-y: scroll;
+    overflow-x: hidden;
+
 }
 
 .Comment{
-    width: 20em;
+    width: 17em;
     text-align: left;
     margin-bottom: 1em;
     background-color: #000 important!;
@@ -21,6 +23,7 @@ text-align: left;
 
 .Grid{
     margin-top:3em;
+    width: 90%;
 }
 
 .Content{

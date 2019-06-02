@@ -22,7 +22,26 @@ class HousePostDetail extends Component {
 
   componentDidMount(){
 
+    this.fetchHouseInfo();
+
+  }
+
+
+  componentDidUpdate(){
+   
+    if(this.props.match.params.name !== this.state.name){
+
+      this.fetchHouseInfo();
+
+    }
+      
+  }
+
+  fetchHouseInfo = () => {
+
+
     let self = this;
+    self.setState({isLoading: true});
     let name = this.props.match.params.name;
     this.setState({name: name});
     
@@ -44,127 +63,45 @@ class HousePostDetail extends Component {
       let houseData = house.data; 
       let charData = chars.data;
 
-      //Handle house request failed
-      if(houseData.length > 0){
+      /*console.log("house data", houseData)
+      console.log("char data", houseData)*/
 
+      let relatedChars = charData;
+    
+      //random characters from related list
+      if(charData.length >= 4){
+        charData = shuffle(charData);
+        relatedChars = [
+        charData[0], 
+        charData[1],
+        charData[2],
+        charData[3]]
+      }
 
-        let relatedChars = charData;
-        
-        //Random characters from related list
-        if(charData.length >= 4){
-          charData = shuffle(charData);
-          relatedChars = [
-          charData[0], 
-          charData[1],
-          charData[2],
-          charData[3]]
-        }
-  
-        let updatedAt = houseData[0].updatedAt.substr(0, houseData[0].updatedAt.indexOf('T'));
-  
-        self.setState({
-            noResult: false,
-            id: houseData[0]._id,
-            name: houseData[0].name,
-            seat: houseData[0].seat || null,
-            region: houseData[0].region || null, 
-            religion: houseData[0].religion || null,
-            imgUrl: houseData[0].logoURL || null,
-            words: houseData[0].words || null,
-            relatedChars: relatedChars,
-            updated: updatedAt
-        })
+      let updatedAt = houseData[0].updatedAt.substr(0, houseData[0].updatedAt.indexOf('T'));
+
+      self.setState({
+          noResult: false,
+          id: houseData[0]._id,
+          name: houseData[0].name,
+          seat: houseData[0].seat || null,
+          region: houseData[0].region || null, 
+          religion: houseData[0].religion || null,
+          imgUrl: houseData[0].logoURL || null,
+          words: houseData[0].words || null,
+          relatedChars: relatedChars,
+          updated: updatedAt
+      })
 
         self.setState({isLoading: false});
-
-      }else{
-        self.setState({isLoading: false, noResult: true});
-      }
-    
-
-
-        
-
-    })).catch(err => {
-    console.log("Error: ", err);
+    })
+    ).catch(err => {
+    console.log("Error:", err);
     self.setState({noResult: true});
     self.setState({isLoading: false});
-    });
-
-    
-}
+    })
 
 
-  componentDidUpdate(){
-   
-
-    if(this.props.match.params.name !== this.state.name){
-
-      
-        
-        let self = this;
-        self.setState({isLoading: true});
-        let name = this.props.match.params.name;
-        this.setState({name: name});
-        
-        const objectInSavedPosts = this.props.savedPosts.find( obj => obj.name === name );
-        if(objectInSavedPosts){
-        this.setState({saved: true})
-        }else{
-        this.setState({saved: false})
-        }
-        
-        
-  
-        //fetch house details from external API
-        axios.all([
-        axios.get("https://api.got.show/api/show/houses/" + name),
-        axios.get('https://api.got.show/api/show/characters/byHouse/' + name)
-        ]).then(axios.spread(function (house, chars) {
-
-          let houseData = house.data; 
-          let charData = chars.data;
-
-          /*console.log("house data", houseData)
-          console.log("char data", houseData)*/
-
-          let relatedChars = charData;
-        
-          //random characters from related list
-          if(charData.length >= 4){
-            charData = shuffle(charData);
-            relatedChars = [
-            charData[0], 
-            charData[1],
-            charData[2],
-            charData[3]]
-          }
-    
-          let updatedAt = houseData[0].updatedAt.substr(0, houseData[0].updatedAt.indexOf('T'));
-    
-          self.setState({
-              noResult: false,
-              id: houseData[0]._id,
-              name: houseData[0].name,
-              seat: houseData[0].seat || null,
-              region: houseData[0].region || null, 
-              religion: houseData[0].religion || null,
-              imgUrl: houseData[0].logoURL || null,
-              words: houseData[0].words || null,
-              relatedChars: relatedChars,
-              updated: updatedAt
-          })
-
-            self.setState({isLoading: false});
-        })
-        ).catch(err => {
-        console.log("Error:", err);
-        self.setState({noResult: true});
-        self.setState({isLoading: false});
-        })
-
-    }
-      
   }
 
   savePostToProfileHandler = () =>{
@@ -173,28 +110,39 @@ class HousePostDetail extends Component {
     //save
     if(this.state.saved === false && this.props.auth.uid){
 
-        //Add new post to users table in content DB
-        axios.get("http://83.227.100.168:42132/addpost/U_" + this.props.auth.uid + "/" + this.state.id + "/house/" + this.state.name + "/" + encodeURIComponent(this.state.imgUrl))
+        let body = {
+          userid: "U_"+this.props.auth.uid,
+          postid: this.state.id,
+          type: 'house',
+          name: this.state.name,
+          img: encodeURIComponent(this.state.imgUrl)
+        };
+  
+  
+        axios.post('http://83.227.100.168:42132/addpost', body)
         .then(res => {
-            console.log(res)
-            this.setState({saved: true, snackbarMessage: "Post saved to profile!"})
-            this.handleOpen();
-            }
-        )
+          console.log(res)
+          this.setState({saved: true, snackbarMessage: "Post saved to profile!"})
+          this.handleOpen();
+        })
 
     }
 
     //unsave
     if(this.state.saved === true && this.props.auth.uid){
 
-      //delete post from users table in content DB
-      axios.get("http://83.227.100.168:42132/deletepost/U_" + this.props.auth.uid + "/" + this.state.id)
+      let body = {
+        userid: "U_"+this.props.auth.uid,
+        postid: this.state.id,
+      };
+  
+  
+      axios.delete('http://83.227.100.168:42132/deletepost', {data: body})
       .then(res => {
-          console.log(res)
-          this.setState({saved: false, snackbarMessage: "Post removed from profile!"})
+        console.log(res)
+          this.setState({saved: false, snackbarMessage: "Post removed from profile!" })
           this.handleOpen();
-          }
-      )
+      })
   }
 
   if(!this.props.auth.uid){

@@ -22,52 +22,7 @@ class BattlePostDetail extends Component {
 
   componentDidMount(){
 
-
-    let self = this;
-    let name = this.props.match.params.name;
-    this.setState({name: name});
-
-  
-    const objectInSavedPosts = this.props.savedPosts.find( obj => obj.name === name );
-    if(objectInSavedPosts){
-      this.setState({saved: true})
-    }else{
-      this.setState({saved: false})
-    }
-  
-  //fetch character details from external API
-  axios.get("https://api.got.show/api/show/battles/" + name)
-  .then(res => {
-
-      let battleData = res.data; 
-      let updatedAt = battleData[0].updatedAt.substr(0, battleData[0].updatedAt.indexOf('T'));
-
-      self.setState({
-          noResult: false,
-          id: battleData[0]._id,
-          name: battleData[0].name,
-          place: battleData[0].place || null,
-          facionsOne: battleData[0].factionsOne || null, 
-          factionsTwo: battleData[0].factionsTwo || null,
-          commandersOne: battleData[0].commandersOne || null,
-          commandersTwo: battleData[0].commandersTwo || null,
-          conflict: battleData[0].conflict || null,
-          forcesOne: battleData[0].forcesOne || null,
-          forcesTwo: battleData[0].forcesTwo|| null,
-          casualties: battleData[0].casualties|| null,
-          updated: updatedAt
-      })
-
-      self.setState({isLoading: false});
-    }
-  ).catch(err => {
-
-    console.log("Error: ", err);
-    self.setState({noResult: true});
-    self.setState({isLoading: false});
-
-  })
-
+    this.fetchBattleInfo();
 
 }
 
@@ -76,55 +31,63 @@ componentDidUpdate(){
 
   if(this.props.match.params.name !== this.state.name){
     
-      let self = this;
-      let name = this.props.match.params.name;
-      this.setState({name: name});
-
-    
-      const objectInSavedPosts = this.props.savedPosts.find( obj => obj.name === name );
-      if(objectInSavedPosts){
-        this.setState({saved: true})
-      }else{
-        this.setState({saved: false})
-      }
-    
-    //fetch character details from external API
-    axios.get("https://api.got.show/api/show/battles/" + name)
-    .then(res => {
-
-        let battleData = res.data; 
-        let updatedAt = battleData[0].updatedAt.substr(0, battleData[0].updatedAt.indexOf('T'));
-
-      self.setState({
-          noResult: false,
-          id: battleData[0]._id,
-          name: battleData[0].name,
-          place: battleData[0].place || null,
-          facionsOne: battleData[0].factionsOne || null, 
-          factionsTwo: battleData[0].factionsTwo || null,
-          commandersOne: battleData[0].commandersOne || null,
-          commandersTwo: battleData[0].commandersTwo || null,
-          conflict: battleData[0].conflict || null,
-          forcesOne: battleData[0].forcesOne || null,
-          forcesTwo: battleData[0].forcesTwo|| null,
-          casualties: battleData[0].casualties|| null,
-          updated: updatedAt
-      })
-
-        self.setState({isLoading: false});
-
-      }
-    ).catch(err => {
-
-      console.log("Error: ", err);
-      this.setState({noResult: true});
-      self.setState({isLoading: false});
-
-    })
-
+     this.fetchBattleInfo();
 
   }
     
+}
+
+fetchBattleInfo = () => {
+
+  let self = this;
+  let name = this.props.match.params.name;
+  this.setState({name: name});
+
+
+  const objectInSavedPosts = this.props.savedPosts.find( obj => obj.name === name );
+  if(objectInSavedPosts){
+    this.setState({saved: true})
+  }else{
+    this.setState({saved: false})
+  }
+
+  //fetch character details from external API
+  axios.get("https://api.got.show/api/show/battles/" + name)
+  .then(res => {
+
+      let battleData = res.data; 
+      let updatedAt = battleData[0].updatedAt.substr(0, battleData[0].updatedAt.indexOf('T'));
+
+    self.setState({
+        noResult: false,
+        id: battleData[0]._id,
+        name: battleData[0].name,
+        place: battleData[0].place || null,
+        facionsOne: battleData[0].factionsOne || null, 
+        factionsTwo: battleData[0].factionsTwo || null,
+        commandersOne: battleData[0].commandersOne || null,
+        commandersTwo: battleData[0].commandersTwo || null,
+        conflict: battleData[0].conflict || null,
+        forcesOne: battleData[0].forcesOne || null,
+        forcesTwo: battleData[0].forcesTwo|| null,
+        casualties: battleData[0].casualties|| null,
+        updated: updatedAt
+    })
+
+      self.setState({isLoading: false});
+
+    }
+  ).catch(err => {
+
+    console.log("Error: ", err);
+    this.setState({noResult: true});
+    self.setState({isLoading: false});
+
+  })
+
+
+
+
 }
 
 savePostToProfileHandler = () =>{
@@ -133,27 +96,40 @@ savePostToProfileHandler = () =>{
   //save
   if(this.state.saved === false && this.props.auth.uid){
 
-      //Add new post to users table in content DB
-      axios.get("http://83.227.100.168:42132/addpost/U_" + this.props.auth.uid + "/" + this.state.id + "/battle/" + this.state.name + "/" + encodeURIComponent(this.state.imgUrl))
+      let body = {
+        userid: "U_"+this.props.auth.uid,
+        postid: this.state.id,
+        type: 'battle',
+        name: this.state.name,
+        img: null
+      };
+
+
+      axios.post('http://83.227.100.168:42132/addpost', body)
       .then(res => {
-          console.log(res)
-          this.setState({saved: true, snackbarMessage: "Post saved to profile!"})
-          this.handleOpen();
-          }
-      )
+        console.log(res)
+        this.setState({saved: true, snackbarMessage: "Post saved to profile!"})
+        this.handleOpen();
+      })
   }
+
+
 
   //unsave
   if(this.state.saved === true && this.props.auth.uid){
 
-    //delete post from users table in content DB
-    axios.get("http://83.227.100.168:42132/deletepost/U_" + this.props.auth.uid + "/" + this.state.id)
+    let body = {
+      userid: "U_"+this.props.auth.uid,
+      postid: this.state.id,
+    };
+
+
+    axios.delete('http://83.227.100.168:42132/deletepost', {data: body})
     .then(res => {
-        console.log(res)
+      console.log(res)
         this.setState({saved: false, snackbarMessage: "Post removed from profile!" })
         this.handleOpen();
-        }
-    )
+    })
   }
 
   

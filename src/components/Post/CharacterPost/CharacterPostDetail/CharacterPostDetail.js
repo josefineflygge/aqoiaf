@@ -22,76 +22,22 @@ class CharacterPostDetail extends Component {
 
   componentDidMount(){
 
+    this.fetchCharacterInfo();
 
-    let self = this;
-    let name = this.props.match.params.name;
-    this.setState({name: name});
-
-    
-    const objectInSavedPosts = this.props.savedPosts.find( obj => obj.name === name );
-    if(objectInSavedPosts){
-      this.setState({saved: true})
-    }else{
-      this.setState({saved: false})
-    }
-    
-    //fetch character details from external API
-    axios.get("https://api.got.show/api/show/characters/" + name)
-    .then(res => {
-
-        let charData = res.data; 
-        let relatedData = charData.related;
-        
-        //random characters from related list
-        if(charData.related.length >= 4){
-          charData.related = shuffle(charData.related);
-          relatedData = [
-          charData.related[0], 
-          charData.related[1],
-          charData.related[2],
-          charData.related[3]]
-        }
-
-        let updatedAt = charData.updatedAt.substr(0, charData.updatedAt.indexOf('T'));
-
-
-        self.setState({
-          noResult: false,
-            id: charData.id,
-            name: charData.name,
-            age: charData.age || null,
-            titles: charData.titles || null, 
-            house: charData.house || null,
-            imgUrl: charData.image || null,
-            origin: charData.origin || null,
-            siblings: charData.siblings || null,
-            lovers: charData.lovers || null,
-            mother: charData.mother|| null,
-            father: charData.father|| null,
-            allegiances: charData.allegiances|| null,
-            culture: charData.culture || null,
-            related: relatedData || null,
-            updated: updatedAt
-        })
-
-        self.setState({isLoading: false});
-
-      }
-    ).catch(err => {
-      console.log("Error: ", err);
-      self.setState({noResult: true});
-      self.setState({isLoading: false});
-    })
-
-    
   }
 
 
   componentDidUpdate(){
 
     if(this.props.match.params.name !== this.state.name){
+      this.fetchCharacterInfo();
+    }
+      
+  }
 
-      let self = this;
+  fetchCharacterInfo = () => {
+
+    let self = this;
 
       let name = this.props.match.params.name;
       this.setState({name: name});
@@ -106,7 +52,6 @@ class CharacterPostDetail extends Component {
     //fetch character details from external API
     axios.get("https://api.got.show/api/show/characters/" + name)
     .then(res => {
-
   
         let charData = res.data;
         
@@ -151,45 +96,55 @@ class CharacterPostDetail extends Component {
       }
     )
 
-    }
-      
+
   }
 
   savePostToProfileHandler = () =>{
 
 
-    //save
-    if(this.state.saved === false && this.props.auth.uid){
+      //save
+      if(this.state.saved === false && this.props.auth.uid){
 
-        //Add new post to users table in content DB
-        axios.get("http://83.227.100.168:42132/addpost/U_" + this.props.auth.uid + "/" + this.state.id + "/character/" + this.state.name + "/" + encodeURIComponent(this.state.imgUrl))
-        .then(res => {
+          let body = {
+            userid: "U_"+this.props.auth.uid,
+            postid: this.state.id,
+            type: 'character',
+            name: this.state.name,
+            img: encodeURIComponent(this.state.imgUrl)
+          };
+    
+    
+          axios.post('http://83.227.100.168:42132/addpost', body)
+          .then(res => {
             console.log(res)
-            this.setState({saved: true, snackbarMessage: "Post saved to profile!" })
+            this.setState({saved: true, snackbarMessage: "Post saved to profile!"})
             this.handleOpen();
-            }
-        )
-    }
+          })
+      }
 
-    //unsave
-    if(this.state.saved === true && this.props.auth.uid){
+      //unsave
+      if(this.state.saved === true && this.props.auth.uid){
 
-      //delete post from users table in content DB
-      axios.get("http://83.227.100.168:42132/deletepost/U_" + this.props.auth.uid + "/" + this.state.id)
-      .then(res => {
+        let body = {
+          userid: "U_"+this.props.auth.uid,
+          postid: this.state.id,
+        };
+    
+    
+        axios.delete('http://83.227.100.168:42132/deletepost', {data: body})
+        .then(res => {
           console.log(res)
-          this.setState({saved: false, snackbarMessage: "Post removed from profile!" })
-          this.handleOpen();
-          }
-      )
-  }
+            this.setState({saved: false, snackbarMessage: "Post removed from profile!" })
+            this.handleOpen();
+        })
+      }
 
-  if(!this.props.auth.uid){
+    if(!this.props.auth.uid){
 
-    this.setState({saved: false, snackbarMessage: "Only logged in users can save posts." })
-    this.handleOpen();
+      this.setState({saved: false, snackbarMessage: "Only logged in users can save posts." })
+      this.handleOpen();
 
-  }
+    }
 
   }
 
@@ -197,7 +152,7 @@ class CharacterPostDetail extends Component {
 
   handleClose = () => this.setState({ open: false })
 
-  textFormat(list){
+  textFormat = (list) => {
 
     let formatted = "";
 

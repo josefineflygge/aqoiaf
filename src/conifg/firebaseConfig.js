@@ -12,6 +12,7 @@ import 'firebase/auth'
     messagingSenderId: "312622269927",
     appId: "1:312622269927:web:e6a9c57ec369bc91"
   };
+  
 
   
   // Initialize Firebase
