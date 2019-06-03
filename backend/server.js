@@ -2,7 +2,6 @@ const express = require('express');
 const app = express();
 var socket = require('socket.io');
 var bodyParser =  require("body-parser");
-
 const sqlite3 = require('sqlite3');
 //const db = new sqlite3.Database('got_db.db');
 const DB_PATH = 'got_db';
@@ -28,7 +27,6 @@ app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
  extended: false
 }));
 app.use(bodyParser.json());
-
 
 
 const db = new sqlite3.Database(DB_PATH, sqlite3.OPEN_READWRITE, function(err){
@@ -72,7 +70,6 @@ io.on('connection', function(socket){
           }
      });
 
-
       socket.emit('fetch msgs', )
     });
 
@@ -109,7 +106,7 @@ io.on('connection', function(socket){
 
 });
 
-// root
+//root
 app.get('/', function (req, res){
 res.send('Welcome to the server :-)')
 })
@@ -168,7 +165,32 @@ else{
   });
 });
 
-// Get all posts by userid
+
+// Delete post from users saved posts
+app.delete('/deletepost', (req, res) => {
+
+  console.log("body:", req.body)
+ 
+ var userID = req.body.userid;
+ var postID = req.body.postid;
+ 
+ db.run(`DELETE FROM ${userID} WHERE id=?`, postID, function(err) {
+ 
+       if (err) {
+          console.log(err.message)
+           res.send("Error: Can't delete post:" + postID + " from user: "+ userID +"!");
+       }
+       else{
+     
+         res.send("Deleted post with ID: " + postID + "!");
+ 
+       }
+ 
+ });
+ 
+ });
+
+//Get all posts by userid
 app.get('/getposts/:userid', (req, res) => {
 
 var userID = req.params.userid;
@@ -195,29 +217,6 @@ db.all(query, (err, rows) => {
 });
 
 
-// Delete post from users saved posts
-app.delete('/deletepost', (req, res) => {
-
- console.log("body:", req.body)
-
-var userID = req.body.userid;
-var postID = req.body.postid;
-
-db.run(`DELETE FROM ${userID} WHERE id=?`, postID, function(err) {
-
-      if (err) {
-         console.log(err.message)
-          res.send("Error: Can't delete post:" + postID + " from user: "+ userID +"!");
-      }
-      else{
-    
-        res.send("Deleted post with ID: " + postID + "!");
-
-      }
-
-});
-
-});
 
 
 // close the database connection
