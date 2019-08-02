@@ -15,6 +15,3 @@ The vision of this project is to create a web app where users can get insight in
 - Socket.io for realtime messaging
 - Firebase for Authentication
 - Firestore for user data
-
-### Link to screencast
-https://vimeo.com/339882310 (Password: TDDD27)
